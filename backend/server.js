@@ -30,3 +30,12 @@ app.use("/api/role-test",roleTestRoutes);
 const courseRoutes = require("./routes/course.routes");
 app.use("/api/courses", courseRoutes);
 
+const enrollmentRoutes = require("./routes/enrollment.routes");
+app.use("/api/enroll",enrollmentRoutes);
+
+
+const errorHandler = require("./middleware/error.middleware");
+app.use(errorHandler);
+
+const notificationRoutes = require("./routes/notification.routes");
+app.use("/api/notifications", notificationRoutes);

@@ -6,7 +6,9 @@ const authorizeRoles = require("../middleware/role.middleware");
 const {
   createCourse,
   getCourses,
-  publishCourse
+  publishCourse,
+  getCourseStudents,
+  getMyCourses
 } = require("../controllers/course.controller");
 
 // Get all published courses (Student + Teacher + Admin)
@@ -33,7 +35,21 @@ router.put(
   publishCourse
 );
 
+// Teacher dashboard - students in a course
+router.get(
+  "/:courseId/students",
+  protect,
+  authorizeRoles("teacher"),
+  getCourseStudents
+);
 
+// Teacher dashboard - my courses
+router.get(
+  "/my",
+  protect,
+  authorizeRoles("teacher"),
+  getMyCourses
+);
 
 
 module.exports = router;

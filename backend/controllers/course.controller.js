@@ -2,6 +2,15 @@ const Course = require("../models/Course");
 
 // Teacher creates a course
 const createCourse = async (req, res) => {
+  if (!title || !description) {
+  return res.status(400).json({
+    message: "Title and description are required"
+  });
+}
+
+
+
+
   try {
     const { title, description } = req.body;
 
@@ -62,5 +71,59 @@ const publishCourse = async (req, res) => {
 };
 
 
+const Enrollment = require("../models/Enrollment");
 
-module.exports = { createCourse, getCourses , publishCourse };
+// Teacher dashboard: view students enrolled in my course
+const getCourseStudents = async (req, res) => {
+  try {
+    const courseId = req.params.courseId;
+
+    // Find course
+    const course = await Course.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Ensure teacher owns this course
+    if (course.createdBy.toString() !== req.user.id) {
+      return res.status(403).json({
+        message: "Not allowed to view enrollments"
+      });
+    }
+
+    // Find enrollments
+    const enrollments = await Enrollment.find({ course: courseId })
+      .populate("student", "name email");
+
+    res.json(enrollments);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+// Teacher dashboard - my courses
+const getMyCourses = async (req, res) => {
+  try {
+    const courses = await Course.find({
+      createdBy: req.user.id
+    });
+
+    res.json(courses);
+  } catch (error) {
+    res.status(500);
+    throw new Error(error.message);
+  }
+};
+
+
+
+
+module.exports = {
+  createCourse,
+  getCourses,
+  publishCourse,
+  getCourseStudents,
+  getMyCourses
+};
