@@ -19,3 +19,14 @@ app.use("/api/auth", authRoutes);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+const protectedRoutes = require("./routes/protected.routes");
+app.use("/api/protected",protectedRoutes);
+
+
+const roleTestRoutes = require("./routes/role-test.routes");
+app.use("/api/role-test",roleTestRoutes);
+
+const courseRoutes = require("./routes/course.routes");
+app.use("/api/courses", courseRoutes);
+
