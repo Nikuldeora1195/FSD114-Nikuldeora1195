@@ -1,6 +1,7 @@
 import Register from "./pages/auth/Register";
 import TeacherDashboard from "./pages/dashboard/TeacherDashboard";
 import Navbar from "./components/common/Navbar";
+import CourseList from "./pages/student/CourseList";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/auth/Login";
@@ -13,7 +14,7 @@ function App() {
       <Routes>
 
         <Route path="/login" element={<Login />} />
-
+    
         <Route
   path="/dashboard"
   element={
@@ -31,6 +32,25 @@ function App() {
     </ProtectedRoute>
   }
 />
+ 
+ <Route
+  path="/courses"
+  element={
+    <ProtectedRoute allowedRoles={["student"]}>
+      <CourseList />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/my-courses"
+  element={
+    <ProtectedRoute allowedRoles={["student"]}>
+      <MyCourses />
+    </ProtectedRoute>
+  }
+/>
+
 
 
 
