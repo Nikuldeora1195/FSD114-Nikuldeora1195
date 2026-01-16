@@ -1,20 +1,21 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const StudentDashboard = () => {
-  const { logout } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
+  const { user } = useContext(AuthContext);
 
   return (
     <div>
       <h1>Student Dashboard</h1>
-      <button onClick={handleLogout}>Logout</button>
+
+      <p>
+        <strong>Logged in as:</strong> {user?.email}
+      </p>
+
+      <p>
+        Welcome to your learning dashboard.  
+        Here you can explore courses, enroll, and track your progress.
+      </p>
     </div>
   );
 };

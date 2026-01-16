@@ -17,3 +17,13 @@ export const getMyEnrollments = () => {
 export const getTeacherCourses = () => {
   return axiosInstance.get("/courses/my");
 };
+
+export const togglePublishCourse = (courseId) => {
+  return axiosInstance.patch(`/courses/${courseId}/publish`);
+};
+
+export const updateProgress = (enrollId, progress) => {
+  return axiosInstance.patch(`/enroll/${enrollId}/progress`, {
+    progress,
+  });
+};

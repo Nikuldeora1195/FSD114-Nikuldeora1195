@@ -1,26 +1,45 @@
 import { useEffect, useState } from "react";
-import { getTeacherCourses } from "../../api/courseApi";
+import {
+  getMyEnrollments,
+  updateProgress,
+} from "../../api/courseApi";
 
 const MyCourses = () => {
   const [courses, setCourses] = useState([]);
-  const [error, setError] = useState("");
+
+  const loadCourses = () => {
+    getMyEnrollments().then((res) => {
+      setCourses(res.data);
+    });
+  };
 
   useEffect(() => {
-    getTeacherCourses()
-      .then((res) => setCourses(res.data))
-      .catch(() => setError("Failed to load your courses"));
+    loadCourses();
   }, []);
+
+  const handleProgress = async (id, value) => {
+    await updateProgress(id, Number(value));
+    loadCourses();
+  };
 
   return (
     <div>
-      <h2>My Courses</h2>
+      <h2>My Enrolled Courses</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {courses.map((item) => (
+        <div key={item._id}>
+          <h4>{item.course.title}</h4>
+          <p>Progress: {item.progress}%</p>
 
-      {courses.map((course) => (
-        <div key={course._id}>
-          <h4>{course.title}</h4>
-          <p>Status: {course.isPublished ? "Published" : "Draft"}</p>
+          <input
+            type="number"
+            min="0"
+            max="100"
+            value={item.progress}
+            onChange={(e) =>
+              handleProgress(item._id, e.target.value)
+            }
+          />
         </div>
       ))}
     </div>
