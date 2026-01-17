@@ -2,10 +2,13 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../api/authApi";
 import { AuthContext } from "../../context/AuthContext";
+import usePageTitle from "../../utils/usePageTitle";
+
 
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
+usePageTitle("Login | EduVillage");
 
   // form state
   const [form, setForm] = useState({

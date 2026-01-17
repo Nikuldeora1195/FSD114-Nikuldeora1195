@@ -10,7 +10,7 @@ export const enrollCourse = (courseId) => {
 };
 
 export const getMyEnrollments = () => {
-  return axiosInstance.get("/enroll/my");
+  return axiosInstance.get("/enroll/my-courses");
 };
 
 // teacher

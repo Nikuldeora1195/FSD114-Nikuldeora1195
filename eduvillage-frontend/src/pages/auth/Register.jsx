@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../api/authApi";
+import usePageTitle from "../../utils/usePageTitle";
+
 
 const Register = () => {
   const navigate = useNavigate();
+usePageTitle("Register | EduVillage");
 
   // form state
   const [form, setForm] = useState({

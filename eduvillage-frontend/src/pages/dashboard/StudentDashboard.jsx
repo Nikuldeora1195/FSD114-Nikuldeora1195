@@ -1,7 +1,12 @@
 import { useContext } from "react";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import usePageTitle from "../../utils/usePageTitle";
+
 
 const StudentDashboard = () => {
+  usePageTitle("Student Dashboard | EduVillage");
+
   const { user } = useContext(AuthContext);
 
   return (
@@ -12,9 +17,18 @@ const StudentDashboard = () => {
         <strong>Logged in as:</strong> {user?.email}
       </p>
 
+      <p>Quick actions:</p>
+      <ul>
+        <li>
+          <Link to="/courses">Browse Courses</Link>
+        </li>
+        <li>
+          <Link to="/my-courses">My Enrolled Courses</Link>
+        </li>
+      </ul>
+
       <p>
-        Welcome to your learning dashboard.  
-        Here you can explore courses, enroll, and track your progress.
+        Use this dashboard to explore courses and track your learning progress.
       </p>
     </div>
   );

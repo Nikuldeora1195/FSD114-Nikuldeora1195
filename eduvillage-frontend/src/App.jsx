@@ -9,6 +9,7 @@ import TeacherDashboard from "./pages/dashboard/TeacherDashboard";
 import CourseList from "./pages/student/CourseList";
 import MyCourses from "./pages/student/MyCourses";
 import TeacherCourses from "./pages/teacher/MyCourses";
+import NotFound from "./pages/NotFound";
 
 import Navbar from "./components/common/Navbar";
 import ProtectedRoute from "./components/protected/ProtectedRoute";
@@ -20,6 +21,12 @@ function App() {
       <Navbar />
 
       <Routes>
+
+
+
+      <Route path="/" element={<Login />} />
+
+
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -70,6 +77,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="*" element={<NotFound />} />
+
       </Routes>
     </BrowserRouter>
   );

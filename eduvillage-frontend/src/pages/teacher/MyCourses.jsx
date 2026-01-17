@@ -18,9 +18,15 @@ const MyCourses = () => {
   }, []);
 
   const handleProgress = async (id, value) => {
+  if (value < 0 || value > 100) return;
+
+  try {
     await updateProgress(id, Number(value));
     loadCourses();
-  };
+  } catch(err) {
+    console.error("Progress update failed");
+  }
+};
 
   return (
     <div>
