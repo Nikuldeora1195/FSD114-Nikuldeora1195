@@ -21,6 +21,10 @@ const Navbar = () => {
             <>
               <Link to="/teacher/dashboard">Dashboard</Link>{" "}
               <Link to="/teacher/courses">My Courses</Link>{" "}
+              <Link to="/teacher/announcements/create">
+  Create Announcement
+</Link>{" "}
+
             </>
           )}
 

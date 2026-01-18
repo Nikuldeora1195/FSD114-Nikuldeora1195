@@ -5,6 +5,9 @@ import Register from "./pages/auth/Register";
 
 import StudentDashboard from "./pages/dashboard/StudentDashboard";
 import TeacherDashboard from "./pages/dashboard/TeacherDashboard";
+import Announcements from "./pages/student/Announcements";
+import CreateAnnouncement from "./pages/teacher/CreateAnnouncement";
+
 
 import CourseList from "./pages/student/CourseList";
 import MyCourses from "./pages/student/MyCourses";
@@ -78,6 +81,25 @@ function App() {
           }
         />
         <Route path="*" element={<NotFound />} />
+<Route
+  path="/announcements"
+  element={
+    <ProtectedRoute allowedRoles={["student", "teacher"]}>
+      <Announcements />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/teacher/announcements/create"
+  element={
+    <ProtectedRoute allowedRoles={["teacher", "admin"]}>
+      <CreateAnnouncement />
+    </ProtectedRoute>
+  }
+/>
+
+
+
 
       </Routes>
     </BrowserRouter>
