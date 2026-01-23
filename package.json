@@ -1,0 +1,15 @@
+{
+  "name": "eduvillage",
+  "version": "1.0.0",
+  "description": "EduVillage – Online Learning Platform",
+  "scripts": {
+    "dev": "cd eduvillage-frontend && npm run dev",
+    "dev:frontend": "cd eduvillage-frontend && npm run dev",
+    "dev:backend": "cd backend && npm run start",
+    "build": "cd eduvillage-frontend && npm run build",
+    "start": "cd backend && npm run start"
+  },
+  "keywords": [],
+  "author": "Nikul kumar",
+  "license": "ISC"
+}

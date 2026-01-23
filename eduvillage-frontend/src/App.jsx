@@ -8,7 +8,6 @@ import TeacherDashboard from "./pages/dashboard/TeacherDashboard";
 import Announcements from "./pages/student/Announcements";
 import CreateAnnouncement from "./pages/teacher/CreateAnnouncement";
 
-
 import CourseList from "./pages/student/CourseList";
 import MyCourses from "./pages/student/MyCourses";
 import TeacherCourses from "./pages/teacher/MyCourses";
@@ -20,86 +19,91 @@ import ProtectedRoute from "./components/protected/ProtectedRoute";
 function App() {
   return (
     <BrowserRouter>
-      {/* Navbar should be OUTSIDE Routes */}
-      <Navbar />
-
       <Routes>
 
-
-
-      <Route path="/" element={<Login />} />
-
-
-        {/* Public routes */}
+        {/* ================= AUTH ROUTES (NO NAVBAR) ================= */}
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Student routes */}
+        {/* ================= APP ROUTES (WITH NAVBAR) ================= */}
         <Route
-          path="/dashboard"
+          path="/*"
           element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <StudentDashboard />
-            </ProtectedRoute>
+            <>
+              <Navbar />
+
+              <Routes>
+                {/* Student routes */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute allowedRoles={["student"]}>
+                      <StudentDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/courses"
+                  element={
+                    <ProtectedRoute allowedRoles={["student"]}>
+                      <CourseList />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/my-courses"
+                  element={
+                    <ProtectedRoute allowedRoles={["student"]}>
+                      <MyCourses />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/announcements"
+                  element={
+                    <ProtectedRoute allowedRoles={["student", "teacher"]}>
+                      <Announcements />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* Teacher routes */}
+                <Route
+                  path="/teacher/dashboard"
+                  element={
+                    <ProtectedRoute allowedRoles={["teacher"]}>
+                      <TeacherDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/teacher/courses"
+                  element={
+                    <ProtectedRoute allowedRoles={["teacher"]}>
+                      <TeacherCourses />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/teacher/announcements/create"
+                  element={
+                    <ProtectedRoute allowedRoles={["teacher", "admin"]}>
+                      <CreateAnnouncement />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </>
           }
         />
-
-        <Route
-          path="/courses"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <CourseList />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/my-courses"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <MyCourses />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Teacher routes */}
-        <Route
-          path="/teacher/dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <TeacherDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/teacher/courses"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <TeacherCourses />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
-<Route
-  path="/announcements"
-  element={
-    <ProtectedRoute allowedRoles={["student", "teacher"]}>
-      <Announcements />
-    </ProtectedRoute>
-  }
-/>
-<Route
-  path="/teacher/announcements/create"
-  element={
-    <ProtectedRoute allowedRoles={["teacher", "admin"]}>
-      <CreateAnnouncement />
-    </ProtectedRoute>
-  }
-/>
-
-
-
 
       </Routes>
     </BrowserRouter>
