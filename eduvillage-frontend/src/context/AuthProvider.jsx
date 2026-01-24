@@ -1,6 +1,8 @@
-import { useState } from "react"; // useEffect is no longer needed for initialization
+import React, { useState } from "react"; // useEffect is no longer needed for initialization
 import { AuthContext } from "./AuthContext";
 import { jwtDecode } from "jwt-decode";
+
+
 
 export const AuthProvider = ({ children }) => {
   // 1. Logic to get initial state immediately

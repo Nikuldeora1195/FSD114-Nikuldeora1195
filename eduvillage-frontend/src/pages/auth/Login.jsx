@@ -16,48 +16,61 @@ const Login = () => {
     navigate("/dashboard");
   };
 
-  return (
-    <div className="min-h-screen bg-bgMain flex items-center justify-center">
-      <div className="bg-surface w-full max-w-md rounded-2xl shadow-xl p-8">
-        <h1 className="text-3xl font-bold text-navy mb-2">
+  
+   return (
+  <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: "#D4DBE9" }}>
+    <div className="w-full max-w-md">
+      <div className="card">
+        <h1 className="text-3xl mb-2" style={{ color: "#142C52" }}>
           Welcome back
         </h1>
-        <p className="text-gray-500 mb-6">
+        <p className="mb-6" style={{ color: "#5B74A3" }}>
           Sign in to continue your learning journey
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            className="input"
-            placeholder="Email address"
-            onChange={(e) =>
-              setForm({ ...form, email: e.target.value })
-            }
-            required
-          />
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="input-group">
+            <label className="input-label">Email</label>
+            <input
+              className="input-field"
+              placeholder="you@example.com"
+              onChange={(e) =>
+                setForm({ ...form, email: e.target.value })
+              }
+              required
+            />
+          </div>
 
-          <input
-            type="password"
-            className="input"
-            placeholder="Password"
-            onChange={(e) =>
-              setForm({ ...form, password: e.target.value })
-            }
-            required
-          />
+          <div className="input-group">
+            <label className="input-label">Password</label>
+            <input
+              type="password"
+              className="input-field"
+              placeholder="••••••••"
+              onChange={(e) =>
+                setForm({ ...form, password: e.target.value })
+              }
+              required
+            />
+          </div>
 
-          <button className="btn-primary">Login</button>
+          <button className="btn btn-primary">
+            Login
+          </button>
         </form>
 
-        <p className="text-sm text-center text-gray-500 mt-6">
+        <p className="helper-text">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-primary font-semibold">
+          <span className="font-semibold" style={{ color: "#142C52" }}>
             Register
-          </Link>
+          </span>
         </p>
       </div>
     </div>
-  );
+  </div>
+);
+
+
 };
 
 export default Login;
