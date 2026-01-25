@@ -3,6 +3,8 @@ import {
   getMyEnrollments,
   updateProgress,
 } from "../../api/courseApi";
+import TeacherLayout from "../../components/app/TeacherLayout";
+
 
 const MyCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -29,6 +31,7 @@ const MyCourses = () => {
 };
 
   return (
+    <TeacherLayout title="Teacher Dashboard">
     <div>
       <h2>My Enrolled Courses</h2>
 
@@ -49,6 +52,7 @@ const MyCourses = () => {
         </div>
       ))}
     </div>
+    </TeacherLayout>
   );
 };
 

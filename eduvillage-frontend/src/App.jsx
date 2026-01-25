@@ -13,7 +13,7 @@ import MyCourses from "./pages/student/MyCourses";
 import TeacherCourses from "./pages/teacher/MyCourses";
 import NotFound from "./pages/NotFound";
 
-import Navbar from "./components/common/Navbar";
+
 import ProtectedRoute from "./components/protected/ProtectedRoute";
 
 function App() {
@@ -31,8 +31,7 @@ function App() {
           path="/*"
           element={
             <>
-              <Navbar />
-
+              
               <Routes>
                 {/* Student routes */}
                 <Route

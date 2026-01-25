@@ -1,56 +1,69 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
-    <nav className="bg-navy shadow-md">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <nav className="bg-[#142C52] px-6 py-4 flex items-center justify-between shadow-md">
+      {/* Brand */}
+      <Link
+        to={user?.role === "teacher" ? "/teacher/dashboard" : "/dashboard"}
+        className="text-white font-semibold text-lg"
+      >
+        EduVillage
+      </Link>
 
-        {/* Logo */}
-        <img
-          src="/Long_logo.png"
-          alt="Civora Nexus"
-          className="h-9"
-        />
+      {/* Links */}
+      <div className="flex items-center gap-6 text-white text-sm">
+        {user?.role === "student" && (
+          <>
+            <Link to="/dashboard" className="hover:underline">
+              Dashboard
+            </Link>
+            <Link to="/courses" className="hover:underline">
+              Courses
+            </Link>
+            <Link to="/my-courses" className="hover:underline">
+              My Learning
+            </Link>
+            <Link to="/announcements" className="hover:underline">
+              Announcements
+            </Link>
+          </>
+        )}
 
-        {/* Links */}
-        <div className="flex items-center gap-6 text-sm font-medium text-white">
-          {user?.role === "student" && (
-            <>
-              <Link className="hover:text-primary" to="/dashboard">Dashboard</Link>
-              <Link className="hover:text-primary" to="/courses">Courses</Link>
-              <Link className="hover:text-primary" to="/my-courses">My Learning</Link>
-              <Link className="hover:text-primary" to="/announcements">Announcements</Link>
-            </>
-          )}
-
-          {user?.role === "teacher" && (
-            <>
-              <Link className="hover:text-primary" to="/teacher/dashboard">Dashboard</Link>
-              <Link className="hover:text-primary" to="/teacher/courses">Courses</Link>
-              <Link className="hover:text-primary" to="/teacher/announcements/create">Announcements</Link>
-            </>
-          )}
-
-          {!user && (
-            <>
-              <Link className="hover:text-primary" to="/login">Login</Link>
-              <Link className="hover:text-primary" to="/register">Register</Link>
-            </>
-          )}
-
-          {user && (
-            <button
-              onClick={logout}
-              className="bg-primaryDark px-4 py-2 rounded-md hover:bg-primary transition"
+        {user?.role === "teacher" && (
+          <>
+            <Link to="/teacher/dashboard" className="hover:underline">
+              Dashboard
+            </Link>
+            <Link to="/teacher/courses" className="hover:underline">
+              My Courses
+            </Link>
+            <Link
+              to="/teacher/announcements/create"
+              className="hover:underline"
             >
-              Logout
-            </button>
-          )}
-        </div>
+              Create Announcement
+            </Link>
+          </>
+        )}
+
+        {/* Logout */}
+        <button
+          onClick={handleLogout}
+          className="ml-4 bg-white text-[#142C52] px-4 py-1 rounded-md font-medium hover:bg-gray-100"
+        >
+          Logout
+        </button>
       </div>
     </nav>
   );

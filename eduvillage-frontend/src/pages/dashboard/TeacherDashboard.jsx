@@ -3,12 +3,16 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import usePageTitle from "../../utils/usePageTitle";
 import Card from "../../components/ui/Card";
+import TeacherLayout from "../../components/app/TeacherLayout";
+
 
 const TeacherDashboard = () => {
   usePageTitle("Teacher Dashboard | EduVillage");
   const { user } = useContext(AuthContext);
 
   return (
+    <TeacherLayout title="Teacher Dashboard">
+
     <div style={{ maxWidth: "800px", margin: "auto" }}>
       <h1>Teacher Dashboard</h1>
 
@@ -31,6 +35,7 @@ const TeacherDashboard = () => {
         </ul>
       </Card>
     </div>
+    </TeacherLayout>
   );
 };
 

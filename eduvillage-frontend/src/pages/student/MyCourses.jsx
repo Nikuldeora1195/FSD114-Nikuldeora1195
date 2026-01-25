@@ -5,6 +5,8 @@ import {
 } from "../../api/courseApi";
 import usePageTitle from "../../utils/usePageTitle";
 import Card from "../../components/ui/Card";
+import StudentLayout from "../../components/app/StudentLayout";
+
 
 const MyCourses = () => {
   usePageTitle("My Courses | EduVillage");
@@ -48,6 +50,9 @@ const MyCourses = () => {
   };
 
   return (
+    <StudentLayout title="Courses">
+
+  
     <div style={{ maxWidth: "800px", margin: "auto" }}>
       <h2>My Enrolled Courses</h2>
 
@@ -79,6 +84,7 @@ const MyCourses = () => {
         </Card>
       ))}
     </div>
+      </StudentLayout>
   );
 };
 

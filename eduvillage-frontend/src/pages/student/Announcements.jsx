@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getAnnouncements } from "../../api/announcementApi";
 import usePageTitle from "../../utils/usePageTitle";
 import Card from "../../components/ui/Card";
+import StudentLayout from "../../components/app/StudentLayout";
+
 
 const Announcements = () => {
   usePageTitle("Announcements | EduVillage");
@@ -15,6 +17,8 @@ const Announcements = () => {
   }, []);
 
   return (
+
+    <StudentLayout title="Courses">
     <div style={{ maxWidth: "800px", margin: "auto" }}>
       <h2>Announcements</h2>
 
@@ -28,6 +32,7 @@ const Announcements = () => {
         </Card>
       ))}
     </div>
+    </StudentLayout>
   );
 };
 

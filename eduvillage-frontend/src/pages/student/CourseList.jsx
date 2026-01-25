@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getPublishedCourses, enrollCourse } from "../../api/courseApi";
+import StudentLayout from "../../components/app/StudentLayout";
 
 const CourseList = () => {
   const [courses, setCourses] = useState([]);
@@ -21,6 +22,7 @@ const CourseList = () => {
   };
 
   return (
+    <StudentLayout title="Courses">
     <div>
       <h2>Available Courses</h2>
       {error && <p>{error}</p>}
@@ -35,6 +37,7 @@ const CourseList = () => {
         </div>
       ))}
     </div>
+    </StudentLayout>
   );
 };
 

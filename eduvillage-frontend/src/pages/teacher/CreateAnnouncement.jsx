@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createAnnouncement } from "../../api/announcementApi";
+import TeacherLayout from "../../components/app/TeacherLayout";
 
 const CreateAnnouncement = () => {
   const [form, setForm] = useState({
@@ -27,7 +28,7 @@ const CreateAnnouncement = () => {
   };
 
   return (
-    <div>
+     <TeacherLayout title="Teacher Dashboard"> <div>
       <h2>Create Announcement</h2>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -56,6 +57,8 @@ const CreateAnnouncement = () => {
         </button>
       </form>
     </div>
+    </TeacherLayout>
+   
   );
 };
 
