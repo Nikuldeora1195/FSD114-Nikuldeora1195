@@ -4,7 +4,7 @@ const API = axios.create({
   baseURL: "http://localhost:5000/api",
 });
 
-// Attach JWT token
+// Attach token
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -13,12 +13,6 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-// Student: enroll in course
-export const enrollInCourse = (courseId) => {
-  return API.post(`/enroll/${courseId}`);
-};
-
-// Student: get my enrollments
-export const getMyEnrollments = () => {
-  return API.get("/enroll/my-courses");
+export const getCourseById = (id) => {
+  return API.get(`/courses/${id}`);
 };

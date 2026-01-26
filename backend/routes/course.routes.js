@@ -8,7 +8,8 @@ const {
   getCourses,
   publishCourse,
   getCourseStudents,
-  getMyCourses
+  getMyCourses,
+   getCourseById
 } = require("../controllers/course.controller");
 
 // Get all published courses (Student + Teacher + Admin)
@@ -42,6 +43,15 @@ router.get(
   authorizeRoles("teacher"),
   getCourseStudents
 );
+
+// // Course details (Student + Teacher)
+// router.get(
+//   "/:id",
+//   protect,
+//   authorizeRoles("student", "teacher"),
+//   getCourseById
+// );
+
 
 // Teacher dashboard - my courses
 router.get(

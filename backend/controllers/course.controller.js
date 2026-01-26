@@ -1,66 +1,66 @@
 const Course = require("../models/Course");
+const Enrollment = require("../models/Enrollment");
 
-// Teacher creates a course
+// ===============================
+// CREATE COURSE (TEACHER)
+// ===============================
 const createCourse = async (req, res) => {
-  if (!title || !description) {
-  return res.status(400).json({
-    message: "Title and description are required"
-  });
-}
-
-
-
-
   try {
     const { title, description } = req.body;
+
+    if (!title || !description) {
+      return res.status(400).json({
+        message: "Title and description are required",
+      });
+    }
 
     const course = await Course.create({
       title,
       description,
-      createdBy: req.user.id
+      createdBy: req.user.id,
     });
 
     res.status(201).json({
       message: "Course created successfully",
-      course
+      course,
     });
+  } catch (error) {
+    console.error("Create course error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ===============================
+// GET ALL PUBLISHED COURSES
+// ===============================
+const getCourses = async (req, res) => {
+  try {
+    const courses = await Course.find({ isPublished: true })
+      .populate("createdBy", "name email");
+
+    res.json(courses);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-//Get all published courses (student view)
-const getCourses = async (req, res)=> {
-  try {
-  const courses = await Course.find({ isPublished:true })
-  .populate("createdBy", "name email");
-
-  res.json(courses);
-
-  } catch (error){
-    res.status(500).json({ message: error.message });
-  }
-};
-
-
-// Publish a course (Teacher only)
+// ===============================
+// PUBLISH COURSE
+// ===============================
 const publishCourse = async (req, res) => {
   try {
-    const courseId = req.params.id;
-
-    // Find course by ID
-    const course = await Course.findById(courseId);
+    const course = await Course.findById(req.params.id);
 
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Check if this teacher owns the course
     if (course.createdBy.toString() !== req.user.id) {
-      return res.status(403).json({ message: "Not allowed to publish this course" });
+      return res
+        .status(403)
+        .json({ message: "Not allowed to publish this course" });
     }
 
-    // Publish the course
     course.isPublished = true;
     await course.save();
 
@@ -70,31 +70,26 @@ const publishCourse = async (req, res) => {
   }
 };
 
-
-const Enrollment = require("../models/Enrollment");
-
-// Teacher dashboard: view students enrolled in my course
+// ===============================
+// GET STUDENTS OF COURSE
+// ===============================
 const getCourseStudents = async (req, res) => {
   try {
-    const courseId = req.params.courseId;
-
-    // Find course
-    const course = await Course.findById(courseId);
+    const course = await Course.findById(req.params.courseId);
 
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Ensure teacher owns this course
     if (course.createdBy.toString() !== req.user.id) {
-      return res.status(403).json({
-        message: "Not allowed to view enrollments"
-      });
+      return res
+        .status(403)
+        .json({ message: "Not allowed to view enrollments" });
     }
 
-    // Find enrollments
-    const enrollments = await Enrollment.find({ course: courseId })
-      .populate("student", "name email");
+    const enrollments = await Enrollment.find({
+      course: course._id,
+    }).populate("student", "name email");
 
     res.json(enrollments);
   } catch (error) {
@@ -102,28 +97,25 @@ const getCourseStudents = async (req, res) => {
   }
 };
 
-
-// Teacher dashboard - my courses
+// ===============================
+// TEACHER: MY COURSES
+// ===============================
 const getMyCourses = async (req, res) => {
   try {
     const courses = await Course.find({
-      createdBy: req.user.id
+      createdBy: req.user.id,
     });
 
     res.json(courses);
   } catch (error) {
-    res.status(500);
-    throw new Error(error.message);
+    res.status(500).json({ message: error.message });
   }
 };
-
-
-
 
 module.exports = {
   createCourse,
   getCourses,
   publishCourse,
   getCourseStudents,
-  getMyCourses
+  getMyCourses,
 };

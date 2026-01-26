@@ -13,12 +13,6 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-// Student: enroll in course
-export const enrollInCourse = (courseId) => {
-  return API.post(`/enroll/${courseId}`);
-};
-
-// Student: get my enrollments
-export const getMyEnrollments = () => {
-  return API.get("/enroll/my-courses");
+export const getCourseStudents = (courseId) => {
+  return API.get(`/courses/${courseId}/students`);
 };

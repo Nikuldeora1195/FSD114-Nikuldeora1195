@@ -7,12 +7,15 @@ import StudentDashboard from "./pages/dashboard/StudentDashboard";
 import TeacherDashboard from "./pages/dashboard/TeacherDashboard";
 import Announcements from "./pages/student/Announcements";
 import CreateAnnouncement from "./pages/teacher/CreateAnnouncement";
+import CreateCourse from "./pages/teacher/CreateCourse";
+
 
 import CourseList from "./pages/student/CourseList";
 import MyCourses from "./pages/student/MyCourses";
 import TeacherCourses from "./pages/teacher/MyCourses";
 import NotFound from "./pages/NotFound";
 
+import CourseDetail from "./pages/student/CourseDetail";
 
 import ProtectedRoute from "./components/protected/ProtectedRoute";
 
@@ -20,7 +23,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* ================= AUTH ROUTES (NO NAVBAR) ================= */}
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
@@ -31,7 +33,6 @@ function App() {
           path="/*"
           element={
             <>
-              
               <Routes>
                 {/* Student routes */}
                 <Route
@@ -98,12 +99,31 @@ function App() {
                   }
                 />
 
+                <Route
+                  path="/courses/:id"
+                  element={
+                    <ProtectedRoute allowedRoles={["student", "teacher"]}>
+                      <CourseDetail />
+                    </ProtectedRoute>
+                  }
+                />
+
+
+                <Route
+  path="/teacher/courses/create"
+  element={
+    <ProtectedRoute allowedRoles={["teacher"]}>
+      <CreateCourse />
+    </ProtectedRoute>
+  }
+/>
+
+
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </>
           }
         />
-
       </Routes>
     </BrowserRouter>
   );
