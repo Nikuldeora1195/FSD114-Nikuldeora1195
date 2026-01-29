@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-
+import AddSection from "./pages/course/AddSection";
 import StudentDashboard from "./pages/dashboard/StudentDashboard";
 import TeacherDashboard from "./pages/dashboard/TeacherDashboard";
 import Announcements from "./pages/student/Announcements";
@@ -126,10 +126,36 @@ function App() {
                   }
                 />
 
-                <Route
-                  path="/courses/:courseId/content"
-                  element={<CourseContent />}
-                />
+              
+
+       <Route
+  path="/courses/:courseId/content"
+  element={
+    <ProtectedRoute allowedRoles={["teacher", "student"]}>
+      <CourseContent />
+    </ProtectedRoute>
+  }
+/>
+
+
+<Route
+  path="/courses/:courseId/add-section"
+  element={
+    <ProtectedRoute allowedRoles={["teacher"]}>
+      <AddSection />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/teacher/courses/:courseId/edit"
+  element={
+    <ProtectedRoute allowedRoles={["teacher"]}>
+      <EditCourse />
+    </ProtectedRoute>
+  }
+/>
+
 
                 <Route path="*" element={<NotFound />} />
               </Routes>

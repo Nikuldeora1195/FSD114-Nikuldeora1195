@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext } from "react";
-
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import {
@@ -7,6 +6,8 @@ import {
   createLesson,
   getCourseContent,
 } from "../../api/contentApi";
+ import { useNavigate } from "react-router-dom";
+
 
 const CourseContent = () => {
   const { courseId } = useParams();
@@ -14,113 +15,154 @@ const CourseContent = () => {
 
   const [sections, setSections] = useState([]);
   const [sectionTitle, setSectionTitle] = useState("");
-  const [lessonTitle, setLessonTitle] = useState("");
-  const [lessonContent, setLessonContent] = useState("");
-  const [activeSection, setActiveSection] = useState(null);
+
+
 
  
-useEffect(() => {
-  let isMounted = true;
+  const [lessonTitle, setLessonTitle] = useState("");
+  const [lessonContent, setLessonContent] = useState("");
+  const [lessonImage, setLessonImage] = useState("");
+  const [activeSection, setActiveSection] = useState(null);
 
-  const fetchContent = async () => {
-    try {
-      const res = await getCourseContent(courseId);
-      if (isMounted) {
-        setSections(res.data);
+  // ✅ FETCH CONTENT (ESLint-safe)
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchContent = async () => {
+      try {
+        const res = await getCourseContent(courseId);
+        if (isMounted) {
+          setSections(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to load course content");
       }
-    } catch (error) {
-      console.error("Failed to load course content");
-    }
-  };
+    };
 
-  fetchContent();
+    fetchContent();
 
-  return () => {
-    isMounted = false;
-  };
-}, [courseId]);
+    return () => {
+      isMounted = false;
+    };
+  }, [courseId]);
 
+  // ✅ ADD SECTION
   const handleAddSection = async () => {
-    if (!sectionTitle) return;
+    if (!sectionTitle.trim()) return;
+
     await createSection({
       title: sectionTitle,
       courseId,
     });
+
     setSectionTitle("");
-    
+    refreshContent();
   };
 
+  // ✅ ADD LESSON (TEXT + IMAGE)
   const handleAddLesson = async () => {
     if (!lessonTitle || !lessonContent || !activeSection) return;
 
     await createLesson({
       title: lessonTitle,
       content: lessonContent,
+      imageUrl: lessonImage,
       sectionId: activeSection,
     });
 
     setLessonTitle("");
     setLessonContent("");
+    setLessonImage("");
     setActiveSection(null);
 
+    refreshContent();
   };
 
+  // 🔄 REFRESH CONTENT
+  const refreshContent = async () => {
+    const res = await getCourseContent(courseId);
+    setSections(res.data);
+  };
+
+
+const navigate = useNavigate();
+
+
+  
   return (
     <div className="max-w-4xl mx-auto py-6">
-      <h1 className="text-2xl font-bold mb-4">
+      <h1 className="text-2xl font-bold mb-6 text-[#142C52]">
         Course Content
       </h1>
 
-      {/* Teacher – Add Section */}
+      {/* TEACHER – ADD SECTION
       {user?.role === "teacher" && (
-        <div className="mb-6">
+        <div className="mb-8 flex gap-2">
           <input
-            className="border px-3 py-2 mr-2"
+            className="border px-3 py-2 flex-1 rounded"
             placeholder="New section title"
             value={sectionTitle}
-            onChange={(e) =>
-              setSectionTitle(e.target.value)
-            }
+            onChange={(e) => setSectionTitle(e.target.value)}
           />
           <button
             onClick={handleAddSection}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
+            className="bg-[#142C52] text-white px-4 py-2 rounded"
           >
             Add Section
           </button>
         </div>
-      )}
+      )} */}
+      {user?.role === "teacher" && (
+  <button
+    onClick={() =>
+      navigate(`/courses/${courseId}/add-section`)
+    }
+    className="bg-[#142C52] text-white px-4 py-2 rounded mb-6"
+  >
+    + Add Section
+  </button>
+)}
 
-      {/* Sections & Lessons */}
+
+      {/* SECTIONS */}
       {sections.map((section) => (
         <div
           key={section._id}
-          className="mb-6 border rounded p-4"
+          className="mb-8 border rounded-lg p-5 bg-white shadow"
         >
-          <h2 className="text-lg font-semibold mb-2">
+          <h2 className="text-lg font-semibold mb-4">
             {section.title}
           </h2>
 
-          {/* Lessons */}
+          {/* LESSONS */}
           {section.lessons.map((lesson) => (
             <div
               key={lesson._id}
-              className="ml-4 mb-2"
+              className="mb-5 pl-4 border-l"
             >
-              <h3 className="font-medium">
+              <h3 className="font-medium text-md mb-1">
                 {lesson.title}
               </h3>
-              <p className="text-sm text-gray-700">
+
+              <p className="text-sm text-gray-700 mb-2">
                 {lesson.content}
               </p>
+
+              {lesson.imageUrl && (
+                <img
+                  src={lesson.imageUrl}
+                  alt="Lesson"
+                  className="max-w-full rounded border"
+                />
+              )}
             </div>
           ))}
 
-          {/* Teacher – Add Lesson */}
+          {/* TEACHER – ADD LESSON */}
           {user?.role === "teacher" && (
-            <div className="mt-4">
+            <div className="mt-6 bg-gray-50 p-4 rounded">
               <input
-                className="border px-3 py-1 mr-2"
+                className="border px-3 py-2 mb-2 w-full rounded"
                 placeholder="Lesson title"
                 value={
                   activeSection === section._id
@@ -134,7 +176,7 @@ useEffect(() => {
               />
 
               <textarea
-                className="border px-3 py-1 mr-2 mt-2 block w-full"
+                className="border px-3 py-2 mb-2 w-full rounded"
                 placeholder="Lesson content"
                 value={
                   activeSection === section._id
@@ -146,9 +188,22 @@ useEffect(() => {
                 }
               />
 
+              <input
+                className="border px-3 py-2 mb-3 w-full rounded"
+                placeholder="Image URL (optional)"
+                value={
+                  activeSection === section._id
+                    ? lessonImage
+                    : ""
+                }
+                onChange={(e) =>
+                  setLessonImage(e.target.value)
+                }
+              />
+
               <button
                 onClick={handleAddLesson}
-                className="bg-green-600 text-white px-3 py-1 mt-2 rounded"
+                className="bg-green-600 text-white px-4 py-2 rounded"
               >
                 Add Lesson
               </button>

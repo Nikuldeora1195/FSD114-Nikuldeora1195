@@ -10,6 +10,15 @@ import {
 import toast from "react-hot-toast";
 
 
+
+
+const { courseId } = useParams();
+
+
+
+
+
+
 const EditCourse = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -22,6 +31,9 @@ const EditCourse = () => {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
+
+
+  const { courseId } = useParams();
   useEffect(() => {
     getCourseById(id)
       .then((res) => {
@@ -95,6 +107,38 @@ const EditCourse = () => {
                 }
                 required
               />
+
+
+
+                <div className="mt-10 border-t pt-6">
+  <h2 className="text-lg font-semibold mb-3">
+    Course Content
+  </h2>
+
+  <button
+  type="button"
+  onClick={() =>
+    navigate(`/courses/${courseId}/content`)
+  }
+  className="bg-[#142C52] text-white px-4 py-2 rounded"
+>
+  Manage Sections & Lessons
+</button>
+
+</div>
+
+
+
+<button
+type="button"
+  onClick={() =>
+    navigate(`/courses/${courseId}/add-section`)
+  }
+  className="ml-3 border px-4 py-2 rounded"
+>
+  + Add Section
+</button>
+
 
               <button
                 disabled={saving}

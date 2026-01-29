@@ -11,6 +11,10 @@ const lessonSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    imageUrl: {
+      type: String,
+      default: "",
+    },
 
     section: {
       type: mongoose.Schema.Types.ObjectId,
@@ -23,7 +27,7 @@ const lessonSchema = new mongoose.Schema(
       default: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Lesson", lessonSchema);

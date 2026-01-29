@@ -48,7 +48,8 @@ const createSection = async (req, res) => {
  */
 const createLesson = async (req, res) => {
   try {
-    const { title, content, sectionId } = req.body;
+    const { title, content, imageUrl, sectionId } = req.body;
+
 
     if (!title || !content || !sectionId) {
       return res.status(400).json({
@@ -70,10 +71,12 @@ const createLesson = async (req, res) => {
     }
 
     const lesson = await Lesson.create({
-      title,
-      content,
-      section: sectionId,
-    });
+  title,
+  content,
+  imageUrl: imageUrl || "",
+  section: sectionId,
+});
+
 
     res.status(201).json(lesson);
   } catch (error) {
