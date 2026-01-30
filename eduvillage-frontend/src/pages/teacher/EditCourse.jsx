@@ -6,21 +6,10 @@ import {
   getCourseById,
   updateCourse,
 } from "../../api/teacherCourseApi";
-
 import toast from "react-hot-toast";
 
-
-
-
-const { courseId } = useParams();
-
-
-
-
-
-
 const EditCourse = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // ✅ ONLY use id
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -29,11 +18,7 @@ const EditCourse = () => {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
 
-
-
-  const { courseId } = useParams();
   useEffect(() => {
     getCourseById(id)
       .then((res) => {
@@ -43,34 +28,19 @@ const EditCourse = () => {
         });
         setLoading(false);
       })
-      .catch(() => {
-        setMessage("Failed to load course");
-        setLoading(false);
-      });
+      .catch(() => setLoading(false));
   }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    setMessage("");
-
-    try {
-  await updateCourse(id, form);
-  toast.success("Course updated");
-  setTimeout(() => navigate("/teacher/courses"), 700);
-} catch {
-  toast.error("Update failed");
-}
-
 
     try {
       await updateCourse(id, form);
-      setMessage("✅ Course updated successfully");
-      setTimeout(() => {
-        navigate("/teacher/courses");
-      }, 800);
+      toast.success("Course updated");
+      navigate("/teacher/courses");
     } catch {
-      setMessage("❌ Failed to update course");
+      toast.error("Update failed");
     } finally {
       setSaving(false);
     }
@@ -108,37 +78,32 @@ const EditCourse = () => {
                 required
               />
 
+              {/* COURSE CONTENT ACTIONS */}
+              <div className="mt-10 border-t pt-6">
+                <h2 className="text-lg font-semibold mb-3">
+                  Course Content
+                </h2>
 
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate(`/courses/${id}/content`)
+                  }
+                  className="bg-[#142C52] text-white px-4 py-2 rounded"
+                >
+                  Manage Sections & Lessons
+                </button>
 
-                <div className="mt-10 border-t pt-6">
-  <h2 className="text-lg font-semibold mb-3">
-    Course Content
-  </h2>
-
-  <button
-  type="button"
-  onClick={() =>
-    navigate(`/courses/${courseId}/content`)
-  }
-  className="bg-[#142C52] text-white px-4 py-2 rounded"
->
-  Manage Sections & Lessons
-</button>
-
-</div>
-
-
-
-<button
-type="button"
-  onClick={() =>
-    navigate(`/courses/${courseId}/add-section`)
-  }
-  className="ml-3 border px-4 py-2 rounded"
->
-  + Add Section
-</button>
-
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate(`/courses/${id}/add-section`)
+                  }
+                  className="ml-3 border px-4 py-2 rounded"
+                >
+                  + Add Section
+                </button>
+              </div>
 
               <button
                 disabled={saving}
@@ -146,10 +111,6 @@ type="button"
               >
                 {saving ? "Saving..." : "Save Changes"}
               </button>
-
-              {message && (
-                <p className="text-sm mt-2">{message}</p>
-              )}
             </form>
           )}
         </Card>

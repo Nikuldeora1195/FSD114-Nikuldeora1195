@@ -1,31 +1,26 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import {
-  createSection,
   createLesson,
   getCourseContent,
 } from "../../api/contentApi";
- import { useNavigate } from "react-router-dom";
-
 
 const CourseContent = () => {
   const { courseId } = useParams();
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
   const [sections, setSections] = useState([]);
-  const [sectionTitle, setSectionTitle] = useState("");
-
-
-
- 
   const [lessonTitle, setLessonTitle] = useState("");
   const [lessonContent, setLessonContent] = useState("");
   const [lessonImage, setLessonImage] = useState("");
   const [activeSection, setActiveSection] = useState(null);
 
-  // ✅ FETCH CONTENT (ESLint-safe)
+  // ✅ FETCH CONTENT (SAFE)
   useEffect(() => {
+    if (!courseId) return;
+
     let isMounted = true;
 
     const fetchContent = async () => {
@@ -35,7 +30,7 @@ const CourseContent = () => {
           setSections(res.data);
         }
       } catch (err) {
-        console.error("Failed to load course content");
+        console.error("Failed to load course content", err);
       }
     };
 
@@ -46,20 +41,7 @@ const CourseContent = () => {
     };
   }, [courseId]);
 
-  // ✅ ADD SECTION
-  const handleAddSection = async () => {
-    if (!sectionTitle.trim()) return;
-
-    await createSection({
-      title: sectionTitle,
-      courseId,
-    });
-
-    setSectionTitle("");
-    refreshContent();
-  };
-
-  // ✅ ADD LESSON (TEXT + IMAGE)
+  // ✅ ADD LESSON
   const handleAddLesson = async () => {
     if (!lessonTitle || !lessonContent || !activeSection) return;
 
@@ -75,54 +57,28 @@ const CourseContent = () => {
     setLessonImage("");
     setActiveSection(null);
 
-    refreshContent();
-  };
-
-  // 🔄 REFRESH CONTENT
-  const refreshContent = async () => {
     const res = await getCourseContent(courseId);
     setSections(res.data);
   };
 
-
-const navigate = useNavigate();
-
-
-  
   return (
     <div className="max-w-4xl mx-auto py-6">
       <h1 className="text-2xl font-bold mb-6 text-[#142C52]">
         Course Content
       </h1>
 
-      {/* TEACHER – ADD SECTION
-      {user?.role === "teacher" && (
-        <div className="mb-8 flex gap-2">
-          <input
-            className="border px-3 py-2 flex-1 rounded"
-            placeholder="New section title"
-            value={sectionTitle}
-            onChange={(e) => setSectionTitle(e.target.value)}
-          />
-          <button
-            onClick={handleAddSection}
-            className="bg-[#142C52] text-white px-4 py-2 rounded"
-          >
-            Add Section
-          </button>
-        </div>
-      )} */}
-      {user?.role === "teacher" && (
-  <button
-    onClick={() =>
-      navigate(`/courses/${courseId}/add-section`)
-    }
-    className="bg-[#142C52] text-white px-4 py-2 rounded mb-6"
-  >
-    + Add Section
-  </button>
-)}
-
+      {/* TEACHER – ADD SECTION */}
+      {user?.role === "teacher" && courseId && (
+        <button
+          type="button"
+          onClick={() =>
+            navigate(`/courses/${courseId}/add-section`)
+          }
+          className="bg-[#142C52] text-white px-4 py-2 rounded mb-6"
+        >
+          + Add Section
+        </button>
+      )}
 
       {/* SECTIONS */}
       {sections.map((section) => (

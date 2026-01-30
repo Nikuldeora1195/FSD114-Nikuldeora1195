@@ -147,14 +147,7 @@ function App() {
   }
 />
 
-<Route
-  path="/teacher/courses/:courseId/edit"
-  element={
-    <ProtectedRoute allowedRoles={["teacher"]}>
-      <EditCourse />
-    </ProtectedRoute>
-  }
-/>
+
 
 
                 <Route path="*" element={<NotFound />} />

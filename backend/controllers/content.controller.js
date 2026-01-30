@@ -11,19 +11,21 @@ const createSection = async (req, res) => {
   try {
     const { title, courseId } = req.body;
 
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
     if (!title || !courseId) {
       return res.status(400).json({
         message: "Title and courseId are required",
       });
     }
 
-    // Ensure course exists
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Ensure teacher owns the course
     if (course.createdBy.toString() !== req.user.id) {
       return res.status(403).json({
         message: "Not allowed to modify this course",
@@ -37,7 +39,8 @@ const createSection = async (req, res) => {
 
     res.status(201).json(section);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Create Section Error:", error);
+    res.status(500).json({ message: "Failed to create section" });
   }
 };
 
@@ -50,6 +53,9 @@ const createLesson = async (req, res) => {
   try {
     const { title, content, imageUrl, sectionId } = req.body;
 
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
 
     if (!title || !content || !sectionId) {
       return res.status(400).json({
@@ -57,13 +63,11 @@ const createLesson = async (req, res) => {
       });
     }
 
-    // Ensure section exists
     const section = await Section.findById(sectionId).populate("course");
     if (!section) {
       return res.status(404).json({ message: "Section not found" });
     }
 
-    // Ensure teacher owns the course
     if (section.course.createdBy.toString() !== req.user.id) {
       return res.status(403).json({
         message: "Not allowed to modify this course",
@@ -71,16 +75,16 @@ const createLesson = async (req, res) => {
     }
 
     const lesson = await Lesson.create({
-  title,
-  content,
-  imageUrl: imageUrl || "",
-  section: sectionId,
-});
-
+      title,
+      content,
+      imageUrl: imageUrl || "",
+      section: sectionId,
+    });
 
     res.status(201).json(lesson);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Create Lesson Error:", error);
+    res.status(500).json({ message: "Failed to create lesson" });
   }
 };
 
@@ -89,9 +93,18 @@ const createLesson = async (req, res) => {
  * @route GET /api/content/course/:courseId
  * @access Student & Teacher
  */
+const mongoose = require("mongoose");
+
 const getCourseContent = async (req, res) => {
   try {
     const { courseId } = req.params;
+
+    // 🔐 GUARD: invalid or missing courseId
+    if (!courseId || !mongoose.Types.ObjectId.isValid(courseId)) {
+      return res.status(400).json({
+        message: "Invalid or missing courseId",
+      });
+    }
 
     const sections = await Section.find({ course: courseId })
       .sort({ order: 1 })
@@ -113,12 +126,15 @@ const getCourseContent = async (req, res) => {
 
     res.json(structured);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Get Course Content Error:", error);
+    res.status(500).json({ message: "Failed to load course content" });
   }
 };
+
 
 module.exports = {
   createSection,
   createLesson,
   getCourseContent,
 };
+
