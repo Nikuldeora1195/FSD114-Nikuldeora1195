@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const { completeLesson } = require("../controllers/enrollment.controller");
 const protect = require("../middleware/auth.middleware");
 const authorizeRoles = require("../middleware/role.middleware");
 const { enrollInCourse ,
@@ -31,6 +31,14 @@ router.put(
   authorizeRoles("student"),
   updateProgress
 );
+
+router.put(
+  "/lesson/:lessonId/complete",
+  protect,
+  completeLesson
+);
+
+
 
 
 

@@ -5,6 +5,7 @@ import {
   createLesson,
   getCourseContent,
 } from "../../api/contentApi";
+import { completeLesson } from "../../api/courseApi";
 
 const CourseContent = () => {
   const { courseId } = useParams();
@@ -16,32 +17,25 @@ const CourseContent = () => {
   const [lessonContent, setLessonContent] = useState("");
   const [lessonImage, setLessonImage] = useState("");
   const [activeSection, setActiveSection] = useState(null);
+  const [completedLessons, setCompletedLessons] = useState([]);
 
-  // ✅ FETCH CONTENT (SAFE)
+  // ✅ FETCH CONTENT
   useEffect(() => {
     if (!courseId) return;
-
-    let isMounted = true;
 
     const fetchContent = async () => {
       try {
         const res = await getCourseContent(courseId);
-        if (isMounted) {
-          setSections(res.data);
-        }
+        setSections(res.data);
       } catch (err) {
         console.error("Failed to load course content", err);
       }
     };
 
     fetchContent();
-
-    return () => {
-      isMounted = false;
-    };
   }, [courseId]);
 
-  // ✅ ADD LESSON
+  // ✅ ADD LESSON (Teacher)
   const handleAddLesson = async () => {
     if (!lessonTitle || !lessonContent || !activeSection) return;
 
@@ -59,6 +53,16 @@ const CourseContent = () => {
 
     const res = await getCourseContent(courseId);
     setSections(res.data);
+  };
+
+  // ✅ COMPLETE LESSON (Student)
+  const handleCompleteLesson = async (lessonId) => {
+    try {
+      await completeLesson(lessonId);
+      setCompletedLessons((prev) => [...prev, lessonId]);
+    } catch {
+      console.error("Lesson completion failed");
+    }
   };
 
   return (
@@ -91,28 +95,52 @@ const CourseContent = () => {
           </h2>
 
           {/* LESSONS */}
-          {section.lessons.map((lesson) => (
-            <div
-              key={lesson._id}
-              className="mb-5 pl-4 border-l"
-            >
-              <h3 className="font-medium text-md mb-1">
-                {lesson.title}
-              </h3>
+          {section.lessons.map((lesson) => {
+            const isCompleted = completedLessons.includes(
+              lesson._id
+            );
 
-              <p className="text-sm text-gray-700 mb-2">
-                {lesson.content}
-              </p>
+            return (
+              <div
+                key={lesson._id}
+                className="mb-5 pl-4 border-l"
+              >
+                <h3 className="font-medium text-md mb-1 flex items-center justify-between">
+                  {lesson.title}
 
-              {lesson.imageUrl && (
-                <img
-                  src={lesson.imageUrl}
-                  alt="Lesson"
-                  className="max-w-full rounded border"
-                />
-              )}
-            </div>
-          ))}
+                  {user?.role === "student" && (
+                    <button
+                      onClick={() =>
+                        handleCompleteLesson(lesson._id)
+                      }
+                      disabled={isCompleted}
+                      className={`text-xs px-3 py-1 rounded ${
+                        isCompleted
+                          ? "bg-green-500 text-white cursor-default"
+                          : "bg-blue-600 text-white hover:bg-blue-700"
+                      }`}
+                    >
+                      {isCompleted
+                        ? "Completed"
+                        : "Mark Complete"}
+                    </button>
+                  )}
+                </h3>
+
+                <p className="text-sm text-gray-700 mb-2">
+                  {lesson.content}
+                </p>
+
+                {lesson.imageUrl && (
+                  <img
+                    src={lesson.imageUrl}
+                    alt="Lesson"
+                    className="max-w-full rounded border"
+                  />
+                )}
+              </div>
+            );
+          })}
 
           {/* TEACHER – ADD LESSON */}
           {user?.role === "teacher" && (

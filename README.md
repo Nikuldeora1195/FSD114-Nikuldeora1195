@@ -1,280 +1,143 @@
-🎓 EduVillage – Online Learning Platform
 
-EduVillage is a full-stack Online Learning Management System (LMS) built using the MERN stack.
-It supports role-based access, structured course content, student enrollment, and progress tracking — inspired by real-world platforms like Coursera and Udemy.
+# 🎓 EduVillage – Online Learning Platform
 
-🚀 Live Project Status
+**EduVillage** is a professional-grade, full-stack Online Learning Management System (LMS) built using the MERN stack. Designed with a focus on clean architecture and secure role-based access, it mirrors the student and instructor workflows found on industry-leading platforms like Coursera and Udemy.
 
-Stage: Active Development
-Frontend: Integrated
-Backend: Stable
-Authentication: JWT + Role-Based Access
-Content Module: Implemented
-UI: Modern, Coursera-style design (Student Learning Flow completed)
+---
 
-🛠 Tech Stack
-Frontend
+## 🚀 Project Status
+* **Stage:** Active Development
+* **Frontend:** Integrated & Responsive
+* **Backend:** Stable API with Middleware Protection
+* **Authentication:** JWT + Role-Based Access Control (RBAC)
+* **UI/UX:** Modern, Coursera-inspired design (Student Learning Flow completed)
 
-React (Vite)
+---
 
-React Router DOM
+## 🛠 Tech Stack
 
-Tailwind CSS
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | React (Vite), Tailwind CSS, Axios, Context API, React Router DOM |
+| **Backend** | Node.js, Express.js |
+| **Database** | MongoDB, Mongoose (ODM) |
+| **Security** | JWT, Bcrypt.js, RBAC Middleware |
+| **Feedback** | React Hot Toast |
 
-Axios
+---
 
-Context API (Auth)
+## 👥 User Roles & Permissions
 
-React Hot Toast
+EduVillage employs a strict **Role-Based Access Control (RBAC)** system to ensure data integrity and security.
 
-Backend
+* **👩‍🎓 Student:** Can register/login, browse published courses, enroll, track course progress, and view announcements.
+* **👨‍🏫 Teacher:** Can create courses, manage curriculum (sections/lessons), and broadcast announcements.
+* **🛡️ Admin:** (Future Scope) System-wide oversight, user management, and platform analytics.
 
-Node.js
+---
 
-Express.js
+## 📚 Core Features
 
-MongoDB
+### 👩‍🎓 Student Experience
+* **Dashboard:** View enrolled courses at a glance with visual progress bars and completion badges.
+* **Structured Learning:** Seamless transition between lessons within a multi-section content view.
+* **My Learning:** Dedicated space for tracking active enrollments and "Continue Learning" functionality.
+* **Announcements:** Stay updated with course-specific news directly from the instructors.
 
-Mongoose
+### 👨‍🏫 Teacher Experience
+* **Course Builder:** Comprehensive tools to create and edit course metadata (titles, descriptions).
+* **Curriculum Management:** Hierarchical structure involving **Sections** and **Lessons**.
+* **Content Control:** Lessons support detailed text-based instruction with optional image URL integration.
+* **Ownership Protection:** Backend guards ensure only the original course creator can modify or delete content.
 
-JWT Authentication
+---
 
-👥 User Roles
+## 🗂 Project Structure
 
-Student
+### 🖥️ Backend (`/backend`)
+```text
+├── config/         # Database connection (db.js)
+├── controllers/    # Logical processing for routes (Auth, Course, Enrollment, etc.)
+├── middleware/     # JWT Auth & Role-based validation guards
+├── models/         # Mongoose schemas (User, Course, Section, Lesson, etc.)
+├── routes/         # Express route definitions
+└── server.js       # Entry point
 
-Teacher
+```
 
-Admin (future scope)
+### 💻 Frontend (`/src`)
 
-Each role has restricted access to features using middleware and protected routes.
+```text
+├── api/            # Axios instance and centralized API calls
+├── components/     # UI components (app, ui, protected routes)
+├── context/        # Global state management (AuthContext)
+├── pages/          # View components (Student, Teacher, Auth, Dashboard)
+├── utils/          # Helper functions and constants
+└── App.jsx         # Main route configuration
 
-🔐 Authentication & Authorization
+```
 
-JWT-based authentication
+---
 
-Role-based access control (RBAC)
+## 🧭 Key Routes
 
-Protected frontend routes
+| Entity | Route | Description |
+| --- | --- | --- |
+| **Auth** | `/login`, `/register` | Secure onboarding flow |
+| **Student** | `/dashboard`, `/my-courses` | Personal learning overview |
+| **Teacher** | `/teacher/courses/create` | Course initialization wizard |
+| **Content** | `/courses/:courseId/content` | Lesson viewer & management |
 
-Backend middleware validation
+---
 
-📚 Core Features
-👩‍🎓 Student Features
+## 🔐 Security & Design Decisions
 
-Register & login
+* **Atomic Management:** Course creation is decoupled from content management to allow for a focused, scalable editing experience.
+* **Defensive API Design:** Implemented backend validation for `ObjectIds` and unauthorized access attempts to prevent data leakage.
+* **State Management:** Secure JWT storage combined with React Context API for persistent user authentication.
+* **Scalable UI:** Designed using Tailwind CSS for a fully responsive experience across mobile, tablet, and desktop.
 
-Browse published courses
+---
 
-Enroll in courses
+## 🏁 How to Run Locally
 
-View enrolled courses (My Learning)
+### 1. Clone the Repository
 
-Track course progress
+```bash
+git clone [https://github.com/your-username/eduvillage.git](https://github.com/your-username/eduvillage.git)
 
-Continue learning from course content
+```
 
-View announcements
+### 2. Setup Backend
 
-👨‍🏫 Teacher Features
-
-Create courses
-
-Edit course details (title & description)
-
-Manage course content (sections & lessons)
-
-Add lessons with text and optional image URL
-
-Create announcements
-
-View own courses
-
-🧩 Course Content
-
-Courses contain Sections
-
-Sections contain Lessons
-
-Lessons support:
-
-Text content
-
-Optional image URL
-
-Ownership checks enforced (only course creator can modify content)
-
-🎨 UI Highlights
-My Learning (Student)
-
-Coursera-style card layout
-
-Visual progress bar
-
-Completion badge
-
-“Continue Learning” button
-
-Responsive grid design
-
-Course Content
-
-Structured view of sections and lessons
-
-Teacher-only content management
-
-Student read-only access
-
-🧭 Important Routes
-Auth
-/login
-/register
-
-Student
-/dashboard
-/courses
-/my-courses
-/announcements
-/courses/:courseId/content
-
-Teacher
-/teacher/dashboard
-/teacher/courses
-/teacher/courses/create
-/teacher/courses/:id/edit
-/courses/:courseId/content
-/courses/:courseId/add-section
-/teacher/announcements/create
-
-🗂 Project Structure
-Backend
-backend/
-│
-├── controllers/
-│ ├── auth.controller.js
-│ ├── course.controller.js
-│ ├── enrollment.controller.js
-│ ├── content.controller.js
-│ └── announcement.controller.js
-│
-├── models/
-│ ├── User.js
-│ ├── Course.js
-│ ├── Enrollment.js
-│ ├── Section.js
-│ ├── Lesson.js
-│ └── Announcement.js
-│
-├── routes/
-│ ├── auth.routes.js
-│ ├── course.routes.js
-│ ├── enrollment.routes.js
-│ ├── content.routes.js
-│ └── announcement.routes.js
-│
-├── middleware/
-│ ├── auth.middleware.js
-│ └── role.middleware.js
-│
-├── config/db.js
-├── server.js
-└── .env
-
-Frontend
-src/
-│
-├── api/
-├── components/
-│ ├── app/
-│ ├── ui/
-│ ├── protected/
-│
-├── context/
-├── pages/
-│ ├── auth/
-│ ├── student/
-│ ├── teacher/
-│ ├── dashboard/
-│ └── course/
-│
-├── utils/
-├── App.jsx
-└── main.jsx
-
-🔐 Security & Validations
-
-JWT verification on backend
-
-Role-based authorization middleware
-
-Ownership validation for course content
-
-Backend guards against invalid ObjectIds
-
-Protected frontend routes
-
-🧪 Error Handling
-
-Defensive backend checks for undefined params
-
-Graceful frontend fallbacks
-
-No server crashes on invalid routes
-
-Clear console logging for debugging
-
-🧠 Design Decisions
-
-Course creation separated from content management
-
-Content editing only allowed after course creation
-
-Sections and lessons managed on dedicated pages
-
-Student progress stored via Enrollment model
-
-UI designed for scalability (quizzes, videos, certificates)
-
-🔜 Planned Features
-
-Lesson completion tracking
-
-Resume last lesson
-
-Quizzes & assessments
-
-Video lessons
-
-Certificate generation
-
-Admin dashboard
-
-Analytics & reports
-
-🏁 How to Run Locally
-Backend
+```bash
 cd backend
 npm install
+# Create a .env file and add your MONGO_URI and JWT_SECRET
 npm run dev
 
-Frontend
+```
+
+### 3. Setup Frontend
+
+```bash
 cd frontend
 npm install
 npm run dev
 
-📌 Project Goal
+```
 
-EduVillage aims to simulate a real-world LMS, focusing on:
+---
 
-Clean architecture
+## 🔜 Planned Features
 
-Secure role-based access
+* [ ] **Lesson Completion:** "Mark as Complete" tracking for students.
+* [ ] **Resume Learning:** Automatically redirect to the last-viewed lesson.
+* [ ] **Video Support:** Integration for hosted video lessons and assessments.
+* [ ] **Certificates:** Automated PDF generation upon 100% course completion.
 
-Scalable content management
+---
 
-Professional UI/UX
+**Developed as part of a Full-Stack Development Internship Project.**
+*Built with best practices for the MERN stack and clean code architecture.*
 
-✨ Author
-
-Developed as part of a Full-Stack Development Internship Project
-using MERN stack best practices.

@@ -1,6 +1,7 @@
 import axiosInstance from "./axiosInstance";
 
-// student
+// ================= STUDENT =================
+
 export const getPublishedCourses = () => {
   return axiosInstance.get("/courses");
 };
@@ -13,7 +14,8 @@ export const getMyEnrollments = () => {
   return axiosInstance.get("/enroll/my-courses");
 };
 
-// teacher
+// ================= TEACHER =================
+
 export const getTeacherCourses = () => {
   return axiosInstance.get("/courses/my");
 };
@@ -22,8 +24,17 @@ export const togglePublishCourse = (courseId) => {
   return axiosInstance.patch(`/courses/${courseId}/publish`);
 };
 
+// ================= PROGRESS =================
+
 export const updateProgress = (enrollId, progress) => {
   return axiosInstance.patch(`/enroll/${enrollId}/progress`, {
     progress,
   });
+};
+
+// ✅ LESSON COMPLETION (FIXED)
+export const completeLesson = (lessonId) => {
+  return axiosInstance.put(
+    `/enroll/lesson/${lessonId}/complete`
+  );
 };
