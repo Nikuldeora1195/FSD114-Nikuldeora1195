@@ -127,14 +127,6 @@ npm run dev
 
 ```
 
----
-
-## 🔜 Planned Features
-
-* [ ] **Lesson Completion:** "Mark as Complete" tracking for students.
-* [ ] **Resume Learning:** Automatically redirect to the last-viewed lesson.
-* [ ] **Video Support:** Integration for hosted video lessons and assessments.
-* [ ] **Certificates:** Automated PDF generation upon 100% course completion.
 
 ---
 
