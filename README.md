@@ -130,6 +130,20 @@ npm run dev
 
 ---
 
+
+
+Student Pages:
+
+Dashboard - Welcome, stats, continue learning
+Course List - Browse and enroll in courses
+My Courses - Track progress, update completion
+Announcements - View timeline of updates
+
+Teacher Pages:
+
+Dashboard - Analytics, performance charts, overview
+My Courses - Manage, publish, edit courses
+
 **Developed as part of a Full-Stack Development Internship Project.**
 *Built with best practices for the MERN stack and clean code architecture.*
 
