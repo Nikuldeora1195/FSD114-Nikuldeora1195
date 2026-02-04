@@ -144,6 +144,13 @@ Teacher Pages:
 Dashboard - Analytics, performance charts, overview
 My Courses - Manage, publish, edit courses
 
+
+File	                Description
+TeacherDashboard.jsx	Light modern dashboard redesign
+MyCourses.jsx (Teacher)	Light card-based course management UI
+CreateAnnouncement.jsx	Clean and modern announcement creation page
+
+
 **Developed as part of a Full-Stack Development Internship Project.**
 *Built with best practices for the MERN stack and clean code architecture.*
 
