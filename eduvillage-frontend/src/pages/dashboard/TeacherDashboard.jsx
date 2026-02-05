@@ -462,15 +462,15 @@
 
 
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import usePageTitle from "../../utils/usePageTitle";
 import * as teacherCourseApi from "../../api/teacherCourseApi";
 
 const TeacherDashboard = () => {
   usePageTitle("Teacher Dashboard | EduVillage");
-  const { user } = useContext(AuthContext);
-
+  const { user, logout } = useContext(AuthContext); // Add logout from context
+  const navigate = useNavigate()
   const [stats, setStats] = useState({
     totalCourses: 0,
     publishedCourses: 0,
@@ -531,6 +531,10 @@ const TeacherDashboard = () => {
       </div>
     );
   }
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <div className="min-h-screen bg-[#F4F7FA]">
@@ -547,57 +551,56 @@ const TeacherDashboard = () => {
             </div>
           </div>
 
-          {/* Navigation */}
-          <nav className="space-y-2">
-            <Link
-              to="/teacher/dashboard"
-              className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-linear-to-r from-[#1B9AAA] to-[#16808D] text-white shadow-md"
-            >
-              <span className="text-xl">📊</span>
-              <span className="font-medium">Dashboard</span>
-            </Link>
+         {/* Navigation */}
+<nav className="space-y-2">
+  <Link
+    to="/teacher/dashboard"
+    className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-linear-to-r from-[#1B9AAA] to-[#16808D] text-white shadow-md"
+  >
+    <span className="text-xl">📊</span>
+    <span className="font-medium">Dashboard</span>
+  </Link>
 
-            <Link
-              to="/teacher/courses"
-              className="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#071426] hover:bg-[#CCE7EC] transition-colors"
-            >
-              <span className="text-xl">📚</span>
-              <span className="font-medium">Courses</span>
-            </Link>
+  <Link
+    to="/teacher/courses"
+    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#071426] hover:bg-[#CCE7EC] transition-colors"
+  >
+    <span className="text-xl">📚</span>
+    <span className="font-medium">Courses</span>
+  </Link>
 
-            <Link
-              to="/teacher/students"
-              className="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#071426] hover:bg-[#CCE7EC] transition-colors"
-            >
-              <span className="text-xl">👥</span>
-              <span className="font-medium">Students</span>
-            </Link>
+  <Link
+    to="/teacher/students"
+    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#071426] hover:bg-[#CCE7EC] transition-colors"
+  >
+    <span className="text-xl">👥</span>
+    <span className="font-medium">Students</span>
+  </Link>
 
-            <Link
-              to="/teacher/announcements/create"
-              className="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#071426] hover:bg-[#CCE7EC] transition-colors"
-            >
-              <span className="text-xl">📢</span>
-              <span className="font-medium">Announcements</span>
-            </Link>
+  <Link
+    to="/teacher/announcements/create"
+    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#071426] hover:bg-[#CCE7EC] transition-colors"
+  >
+    <span className="text-xl">📢</span>
+    <span className="font-medium">Announcements</span>
+  </Link>
 
-            <Link
-              to="/teacher/analytics"
-              className="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#071426] hover:bg-[#CCE7EC] transition-colors"
-            >
-              <span className="text-xl">📈</span>
-              <span className="font-medium">Analytics</span>
-            </Link>
+  <Link
+    to="/teacher/results"
+    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#071426] hover:bg-[#CCE7EC] transition-colors"
+  >
+    <span className="text-xl">📈</span>
+    <span className="font-medium">Results</span>
+  </Link>
 
-            <Link
-              to="/teacher/settings"
-              className="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#071426] hover:bg-[#CCE7EC] transition-colors"
-            >
-              <span className="text-xl">⚙️</span>
-              <span className="font-medium">Settings</span>
-            </Link>
-          </nav>
-
+  <button
+    onClick={handleLogout}
+    className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-[#071426] hover:bg-red-50 hover:text-[#EF4444] transition-colors"
+  >
+    <span className="text-xl">🚪</span>
+    <span className="font-medium">Logout</span>
+  </button>
+</nav>
           {/* Promotion Card */}
           <div className="mt-8 bg-linear-to-br from-[#22C55E] to-[#178740] rounded-xl p-4 shadow-lg">
             <p className="text-sm font-semibold mb-2 text-white">Upgrade to Pro</p>
