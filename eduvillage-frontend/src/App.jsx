@@ -19,6 +19,8 @@ import CourseDetail from "./pages/student/CourseDetail";
 import CourseContent from "./pages/course/CourseContent";
 import ProtectedRoute from "./components/protected/ProtectedRoute";
 
+import AdminDashboard from "./pages/admin/AdminDashboard";
+
 function App() {
   return (
     <BrowserRouter>
@@ -143,6 +145,24 @@ function App() {
   element={
     <ProtectedRoute allowedRoles={["teacher"]}>
       <AddSection />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/dashboard"
+  element={
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <AdminDashboard />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/users"
+  element={
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <AdminUsers />
     </ProtectedRoute>
   }
 />

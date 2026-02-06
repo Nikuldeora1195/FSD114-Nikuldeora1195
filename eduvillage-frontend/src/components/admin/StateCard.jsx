@@ -18,7 +18,7 @@ const StatCard = ({ title, value, icon, color = "blue", trend }) => {
       className={`bg-white rounded-xl p-6 border border-[#CCE7EC] hover:${borderColors[color]} hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}
     >
       <div className="flex items-center justify-between mb-4">
-        <div className={`bg-gradient-to-br ${colorClasses[color]} p-3 rounded-full`}>
+        <div className={`bg-linear-to-br ${colorClasses[color]} p-3 rounded-full`}>
           <span className="text-3xl">{icon}</span>
         </div>
         {trend && (

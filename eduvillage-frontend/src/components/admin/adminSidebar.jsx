@@ -27,7 +27,7 @@ const AdminSidebar = () => {
       {/* Logo */}
       <div className="mb-8">
         <div className="flex items-center space-x-2">
-          <div className="bg-gradient-to-br from-[#1B9AAA] to-[#16808D] p-2 rounded-lg">
+          <div className="bg-linear-to-br from-[#1B9AAA] to-[#16808D] p-2 rounded-lg">
             <span className="text-xl font-bold text-white">📚</span>
           </div>
           <div>
@@ -38,6 +38,8 @@ const AdminSidebar = () => {
       </div>
 
       {/* Navigation */}
+
+      
       <nav className="space-y-2">
         {navItems.map((item) => (
           <Link
@@ -45,7 +47,7 @@ const AdminSidebar = () => {
             to={item.path}
             className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
               isActive(item.path)
-                ? "bg-gradient-to-r from-[#1B9AAA] to-[#16808D] text-white shadow-md"
+                ? "bg-linear-to-r from-[#1B9AAA] to-[#16808D] text-white shadow-md"
                 : "text-[#071426] hover:bg-[#CCE7EC]"
             }`}
           >
@@ -64,7 +66,7 @@ const AdminSidebar = () => {
       </nav>
 
       {/* Admin Badge */}
-      <div className="mt-8 bg-gradient-to-br from-[#1B9AAA] to-[#16808D] rounded-xl p-4 shadow-lg">
+      <div className="mt-8 bg-linear-to-br from-[#1B9AAA] to-[#16808D] rounded-xl p-4 shadow-lg">
         <div className="flex items-center space-x-3 mb-2">
           <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
             <span className="text-xl">👨‍💼</span>
