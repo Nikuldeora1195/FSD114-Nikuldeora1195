@@ -132,7 +132,7 @@ const Announcements = () => {
 
   if (loading) {
     return (
-      <StudentLayout title="Announcements">
+      <StudentLayout title=" ">
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1B9AAA]"></div>
         </div>
@@ -141,7 +141,7 @@ const Announcements = () => {
   }
 
   return (
-    <StudentLayout title="Announcements">
+    <StudentLayout title="  ">
       <div className="space-y-8">
         {/* Header Section */}
         <div className="bg-linear-to-r from-[#103642] via-[#025992] to-[#105c73] rounded-xl p-8 text-white shadow-lg">

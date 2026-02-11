@@ -81,7 +81,7 @@ const { user } = useContext(AuthContext);
   }
 
   return (
-    <StudentLayout title="My Learning">
+    <StudentLayout title="  ">
       <div className="space-y-8">
         {/* Header Section with Gradient */}
         <div className="bg-linear-to-r from-[#02394A] via-[#012136] to-[#01181F] rounded-xl p-8 text-white shadow-lg">
@@ -300,7 +300,7 @@ const { user } = useContext(AuthContext);
     </p>
 <button
   onClick={() =>
- navigate(`/certificate/${encodeURIComponent(course.title)}`
+navigate(`/certificate/${encodeURIComponent(course.title)}`
 
 )
 

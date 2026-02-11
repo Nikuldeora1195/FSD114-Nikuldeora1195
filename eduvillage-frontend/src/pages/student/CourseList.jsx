@@ -97,7 +97,7 @@ const CourseList = () => {
   }
 
   return (
-    <StudentLayout title="Browse Courses">
+    <StudentLayout title="  ">
       <div className="space-y-8">
         {/* Header Section */}
         <div className="bg-linear-to-r from-[#02394A] via-[#012136] to-[#01181F] rounded-xl p-8 text-white shadow-lg">
