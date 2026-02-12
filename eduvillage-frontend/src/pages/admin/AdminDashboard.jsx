@@ -42,7 +42,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-[#F4F7FA]">
       <div className="flex">
-        <AdminSidebar />
+        {/* <AdminSidebar /> */}
 
         {/* Main Content */}
         <main className="flex-1 p-8">
