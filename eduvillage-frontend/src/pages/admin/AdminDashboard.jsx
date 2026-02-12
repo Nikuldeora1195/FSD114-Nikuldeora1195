@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAdminStats } from "../../api/AdminApi";
-import AdminSidebar from "../../components/admin/AdminSidebar";
+import { getAdminStats } from "../../api/adminApi";
+// import AdminSidebar from "../../components/admin/AdminSidebar";
 import StatCard from "../../components/admin/StatCard";
 import toast from "react-hot-toast";
 
