@@ -28,8 +28,9 @@ const CourseContent = () => {
   const [expandedSections, setExpandedSections] = useState(new Set());
   const [loading, setLoading] = useState(true);
 const [quiz, setQuiz] = useState(null);
-const { id } = useParams();
+// const { id } = useParams();
 
+const [lessonVideo, setLessonVideo] = useState("");
 
 
   // ✅ FETCH CONTENT
@@ -69,13 +70,6 @@ useEffect(() => {
 
 
 
-useEffect(() => {
-  getQuizByCourse(courseId)
-    .then(res => setQuiz(res.data))
-    .catch(() => {});
-}, [courseId]);
-
-
 
 
 
@@ -100,13 +94,16 @@ useEffect(() => {
     const toastId = toast.loading("Adding lesson...");
     try {
       await createLesson({
-        title: lessonTitle,
-        content: lessonContent,
-        imageUrl: lessonImage,
-        sectionId: activeSection,
-      });
+  title: lessonTitle,
+  content: lessonContent,
+  imageUrl: lessonImage,
+  videoUrl: lessonVideo, // Added
+  sectionId: activeSection,
+});
+
 
       toast.success("Lesson added successfully! 🎉", { id: toastId });
+setLessonVideo("");
 
       setLessonTitle("");
       setLessonContent("");
@@ -224,7 +221,7 @@ useEffect(() => {
 
            <button
   type="button"
-  onClick={() => navigate(`/teacher/course/${id}/quiz/create`)}
+  onClick={() => navigate(`/teacher/course/${courseId}/quiz/create`)}
   className="bg-[#1B9AAA] text-white px-4 py-2 rounded-lg mt-4"
 >
   Create Quiz
@@ -318,6 +315,35 @@ useEffect(() => {
                                     <p className="text-[#071426] opacity-80 leading-relaxed whitespace-pre-line">
                                       {lesson.content}
                                     </p>
+{/* 🎥 Student Video Player */}
+{lesson.videoUrl && (
+  <div className="mt-4">
+    {lesson.videoUrl.includes("youtube") ||
+    lesson.videoUrl.includes("youtu.be") ? (
+      <iframe
+        className="w-full h-72 rounded-lg border"
+        src={`https://www.youtube.com/embed/${
+          lesson.videoUrl.split("v=")[1]?.split("&")[0] ||
+          lesson.videoUrl.split("youtu.be/")[1]
+        }`}
+        title="Lesson Video"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      ></iframe>
+    ) : (
+      <video
+        controls
+        className="w-full rounded-lg border"
+      >
+        <source src={lesson.videoUrl} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    )}
+  </div>
+)}
+
+
                                   </div>
                                 </div>
 
@@ -413,6 +439,48 @@ useEffect(() => {
                                 }}
                               />
                             </div>
+<div>
+  <label className="block text-sm font-medium text-[#142C52] mb-2">
+    Video URL (Optional)
+  </label>
+  <input
+    type="text"
+    className="w-full border-2 border-[#CCE7EC] rounded-lg px-4 py-2 focus:outline-none focus:border-[#1B9AAA]"
+    placeholder="YouTube or MP4 URL"
+    value={activeSection === section._id ? lessonVideo : ""}
+    onChange={(e) => {
+      setActiveSection(section._id);
+      setLessonVideo(e.target.value);
+    }}
+  />
+</div>
+
+{/* 🎥 Video Preview */}
+{lessonVideo && (
+  <div className="mt-4">
+    <p className="text-sm text-[#142C52] font-medium mb-2">
+      Video Preview:
+    </p>
+
+    {lessonVideo.includes("youtube") ||
+    lessonVideo.includes("youtu.be") ? (
+      <iframe
+        className="w-full h-64 rounded-lg border"
+        src={lessonVideo
+          .replace("watch?v=", "embed/")
+          .replace("youtu.be/", "youtube.com/embed/")}
+        title="Video Preview"
+        frameBorder="0"
+        allowFullScreen
+      ></iframe>
+    ) : (
+      <video controls className="w-full rounded-lg border">
+        <source src={lessonVideo} type="video/mp4" />
+      </video>
+    )}
+  </div>
+)}
+
 
                             <button
                               onClick={handleAddLesson}

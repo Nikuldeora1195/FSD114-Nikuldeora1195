@@ -38,3 +38,7 @@ export const getCourseById = (id) => {
 export const updateCourse = (id, data) => {
   return API.put(`/courses/${id}`, data);
 };
+
+export const getCourseStudents = (courseId) => {
+  return API.get(`/courses/${courseId}/students`);
+};

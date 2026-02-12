@@ -15,6 +15,10 @@ const lessonSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    videoUrl: {
+  type: String,
+},
+
 
     section: {
       type: mongoose.Schema.Types.ObjectId,

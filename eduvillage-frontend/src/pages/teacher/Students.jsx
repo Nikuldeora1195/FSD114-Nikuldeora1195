@@ -1,89 +1,76 @@
-import { useEffect, useState, useMemo } from "react";
+
+
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import * as teacherCourseApi from "../../api/teacherCourseApi";
 import toast from "react-hot-toast";
 
 const Students = () => {
   const [courses, setCourses] = useState([]);
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    loadCourses();
+    loadData();
   }, []);
 
-  const loadCourses = async () => {
+  const loadData = async () => {
     try {
-      const response = await teacherCourseApi.getMyCourses();
-      setCourses(response.data);
+      const courseRes = await teacherCourseApi.getMyCourses();
+      setCourses(courseRes.data);
+
+      let allStudents = [];
+
+      for (const course of courseRes.data) {
+        try {
+          const studentRes = await teacherCourseApi.getCourseStudents(course._id);
+
+          const formatted = studentRes.data.map((enrollment) => ({
+            _id: enrollment._id,
+            name: enrollment.student?.name,
+            email: enrollment.student?.email,
+            courseId: course._id,
+            courseName: course.title,
+            progress: enrollment.progress || 0,
+            isCompleted: enrollment.isCompleted,
+          }));
+
+          allStudents = [...allStudents, ...formatted];
+        // eslint-disable-next-line no-unused-vars
+        } catch (err) {
+          console.log("No students for course:", course.title);
+        }
+      }
+
+      setStudents(allStudents);
     } catch (error) {
-      console.error("Failed to load courses:", error);
-      toast.error("Failed to load courses");
+      console.error("Failed to load data:", error);
+      toast.error("Failed to load student data");
     } finally {
       setLoading(false);
     }
   };
 
-  // Mock student data (since we don't have enrollment API for teachers)
-  // In real implementation, you'd fetch this from an API endpoint
-  const mockStudents = useMemo(() => {
-    const students = [];
-    courses.forEach((course) => {
-      const studentCount = Math.floor(Math.random() * 50) + 10;
-      for (let i = 0; i < studentCount; i++) {
-        students.push({
-          _id: `${course._id}-student-${i}`,
-          name: `Student ${i + 1}`,
-          email: `student${i + 1}@example.com`,
-          courseId: course._id,
-          courseName: course.title,
-          enrolledDate: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
-          progress: Math.floor(Math.random() * 100),
-          isActive: Math.random() > 0.1,
-          lastActive: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-        });
-      }
-    });
-    return students;
-  }, [courses]);
-
   // Filter students
-  const filteredStudents = mockStudents.filter((student) => {
+  const filteredStudents = students.filter((student) => {
     const matchesCourse = selectedCourse === "all" || student.courseId === selectedCourse;
     const matchesSearch =
-      student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.courseName.toLowerCase().includes(searchQuery.toLowerCase());
+      student.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.courseName?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCourse && matchesSearch;
   });
 
   // Calculate stats
-  const totalStudents = mockStudents.length;
-  const activeStudents = mockStudents.filter((s) => s.isActive).length;
-  const averageProgress = mockStudents.length > 0
-    ? Math.round(mockStudents.reduce((sum, s) => sum + s.progress, 0) / mockStudents.length)
-    : 0;
-  const completedStudents = mockStudents.filter((s) => s.progress === 100).length;
-
-  // Format date
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-  };
-
-  // Get time ago
-  const getTimeAgo = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    return formatDate(dateString);
-  };
+  const totalStudents = students.length;
+  const completedStudents = students.filter((s) => s.isCompleted).length;
+  const averageProgress =
+    students.length > 0
+      ? Math.round(students.reduce((sum, s) => sum + s.progress, 0) / students.length)
+      : 0;
+  const activeStudents = students.filter((s) => !s.isCompleted).length;
 
   if (loading) {
     return (
@@ -101,7 +88,7 @@ const Students = () => {
           <div>
             <h1 className="text-4xl font-bold text-[#142C52] mb-2">My Students</h1>
             <p className="text-[#071426] opacity-70 text-lg">
-              Monitor student progress and engagement
+              Real enrolled students from your courses
             </p>
           </div>
           <Link
@@ -131,8 +118,8 @@ const Students = () => {
                 <span className="text-3xl">✅</span>
               </div>
             </div>
-            <h3 className="text-[#071426] opacity-70 text-sm mb-1">Active Students</h3>
-            <p className="text-3xl font-bold text-[#142C52]">{activeStudents}</p>
+            <h3 className="text-[#071426] opacity-70 text-sm mb-1">Completed</h3>
+            <p className="text-3xl font-bold text-[#142C52]">{completedStudents}</p>
           </div>
 
           <div className="bg-white rounded-xl p-6 border border-[#CCE7EC] hover:border-[#1B9AAA] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
@@ -145,14 +132,14 @@ const Students = () => {
             <p className="text-3xl font-bold text-[#142C52]">{averageProgress}%</p>
           </div>
 
-          <div className="bg-white rounded-xl p-6 border border-[#CCE7EC] hover:border-[#4C97A8] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+          <div className="bg-white rounded-xl p-6 border border-[#CCE7EC] hover:border-[#EF4444] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
-              <div className="bg-linear-to-br from-[#4C97A8]/20 to-[#02394A]/20 p-3 rounded-full">
-                <span className="text-3xl">🎓</span>
+              <div className="bg-linear-to-br from-[#EF4444]/20 to-[#EB1414]/20 p-3 rounded-full">
+                <span className="text-3xl">🔄</span>
               </div>
             </div>
-            <h3 className="text-[#071426] opacity-70 text-sm mb-1">Completed</h3>
-            <p className="text-3xl font-bold text-[#142C52]">{completedStudents}</p>
+            <h3 className="text-[#071426] opacity-70 text-sm mb-1">In Progress</h3>
+            <p className="text-3xl font-bold text-[#142C52]">{activeStudents}</p>
           </div>
         </div>
 
@@ -170,7 +157,7 @@ const Students = () => {
                 <option value="all">All Courses ({totalStudents})</option>
                 {courses.map((course) => (
                   <option key={course._id} value={course._id}>
-                    {course.title} ({mockStudents.filter(s => s.courseId === course._id).length})
+                    {course.title} ({students.filter((s) => s.courseId === course._id).length})
                   </option>
                 ))}
               </select>
@@ -206,12 +193,6 @@ const Students = () => {
                     Progress
                   </th>
                   <th className="text-left px-6 py-4 text-sm font-semibold text-[#142C52]">
-                    Enrolled Date
-                  </th>
-                  <th className="text-left px-6 py-4 text-sm font-semibold text-[#142C52]">
-                    Last Active
-                  </th>
-                  <th className="text-left px-6 py-4 text-sm font-semibold text-[#142C52]">
                     Status
                   </th>
                 </tr>
@@ -219,30 +200,42 @@ const Students = () => {
               <tbody>
                 {filteredStudents.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="text-center py-12">
+                    <td colSpan="4" className="text-center py-12">
                       <div className="text-[#071426] opacity-60">
-                        <p className="text-lg mb-2">No students found</p>
-                        <p className="text-sm">Try adjusting your filters or search query</p>
+                        <div className="text-5xl mb-3">👨‍🎓</div>
+                        <p className="text-lg mb-2">
+                          {students.length === 0 
+                            ? "No students enrolled yet"
+                            : "No students match your filters"}
+                        </p>
+                        <p className="text-sm">
+                          {students.length === 0
+                            ? "Students will appear here when they enroll in your courses"
+                            : "Try adjusting your search or filter"}
+                        </p>
                       </div>
                     </td>
                   </tr>
                 ) : (
-                  filteredStudents.map((student) => (
+                  filteredStudents.map((student, index) => (
                     <tr
                       key={student._id}
                       className="border-b border-[#CCE7EC] hover:bg-[#F4F7FA] transition-colors"
+                      style={{
+                        animation: `fadeInUp 0.3s ease-out ${index * 0.05}s both`,
+                      }}
                     >
                       {/* Student Info */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-linear-to-br from-[#1B9AAA] to-[#16808D] rounded-full flex items-center justify-center shrink-0">
                             <span className="text-white font-bold text-sm">
-                              {student.name.charAt(0).toUpperCase()}
+                              {student.name?.charAt(0).toUpperCase() || "S"}
                             </span>
                           </div>
                           <div>
-                            <p className="font-medium text-[#142C52]">{student.name}</p>
-                            <p className="text-xs text-[#071426] opacity-60">{student.email}</p>
+                            <p className="font-medium text-[#142C52]">{student.name || "Unknown"}</p>
+                            <p className="text-xs text-[#071426] opacity-60">{student.email || "No email"}</p>
                           </div>
                         </div>
                       </td>
@@ -255,7 +248,7 @@ const Students = () => {
                       {/* Progress */}
                       <td className="px-6 py-4">
                         <div className="space-y-1">
-                          <div className="flex justify-between text-xs">
+                          <div className="flex justify-between text-xs mb-1">
                             <span className="text-[#071426] opacity-70">Progress</span>
                             <span className="text-[#1B9AAA] font-bold">{student.progress}%</span>
                           </div>
@@ -268,27 +261,17 @@ const Students = () => {
                         </div>
                       </td>
 
-                      {/* Enrolled Date */}
-                      <td className="px-6 py-4">
-                        <p className="text-sm text-[#071426]">{formatDate(student.enrolledDate)}</p>
-                      </td>
-
-                      {/* Last Active */}
-                      <td className="px-6 py-4">
-                        <p className="text-sm text-[#071426] opacity-70">{getTimeAgo(student.lastActive)}</p>
-                      </td>
-
                       {/* Status */}
                       <td className="px-6 py-4">
                         <span
                           className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
-                            student.isActive
+                            student.isCompleted
                               ? "bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]"
                               : "bg-[#EF4444]/10 text-[#EF4444] border border-[#EF4444]"
                           }`}
                         >
-                          <span>{student.isActive ? "●" : "○"}</span>
-                          <span>{student.isActive ? "Active" : "Inactive"}</span>
+                          <span>{student.isCompleted ? "✓" : "⏳"}</span>
+                          <span>{student.isCompleted ? "Completed" : "In Progress"}</span>
                         </span>
                       </td>
                     </tr>
@@ -298,7 +281,7 @@ const Students = () => {
             </table>
           </div>
 
-          {/* Pagination */}
+          {/* Pagination/Summary */}
           {filteredStudents.length > 0 && (
             <div className="bg-[#F4F7FA] px-6 py-4 border-t border-[#CCE7EC]">
               <div className="flex justify-between items-center">
@@ -321,24 +304,34 @@ const Students = () => {
           )}
         </div>
 
-        {/* Performance Overview */}
-        {courses.length > 0 && (
+        {/* Course Performance Overview */}
+        {courses.length > 0 && students.length > 0 && (
           <div className="bg-white rounded-xl border border-[#CCE7EC] shadow-lg p-6">
-            <h2 className="text-xl font-bold text-[#142C52] mb-6">Course Performance</h2>
+            <h2 className="text-xl font-bold text-[#142C52] mb-6">Course Performance Overview</h2>
             <div className="space-y-4">
               {courses.map((course) => {
-                const courseStudents = mockStudents.filter((s) => s.courseId === course._id);
-                const avgCourseProgress = courseStudents.length > 0
-                  ? Math.round(courseStudents.reduce((sum, s) => sum + s.progress, 0) / courseStudents.length)
-                  : 0;
+                const courseStudents = students.filter((s) => s.courseId === course._id);
+                const avgCourseProgress =
+                  courseStudents.length > 0
+                    ? Math.round(
+                        courseStudents.reduce((sum, s) => sum + s.progress, 0) / courseStudents.length
+                      )
+                    : 0;
+
+                if (courseStudents.length === 0) return null;
 
                 return (
-                  <div key={course._id} className="p-4 bg-[#F4F7FA] rounded-lg border border-[#CCE7EC]">
+                  <div
+                    key={course._id}
+                    className="p-4 bg-[#F4F7FA] rounded-lg border border-[#CCE7EC] hover:border-[#1B9AAA] transition-all"
+                  >
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h3 className="font-semibold text-[#142C52]">{course.title}</h3>
                         <p className="text-sm text-[#071426] opacity-70">
-                          {courseStudents.length} students enrolled
+                          {courseStudents.length} {courseStudents.length === 1 ? 'student' : 'students'} enrolled
+                          {" • "}
+                          {courseStudents.filter((s) => s.isCompleted).length} completed
                         </p>
                       </div>
                       <span className="text-lg font-bold text-[#1B9AAA]">{avgCourseProgress}%</span>
@@ -356,6 +349,20 @@ const Students = () => {
           </div>
         )}
       </div>
+
+      {/* Add fadeInUp animation */}
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 };
